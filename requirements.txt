@@ -3,8 +3,4 @@ opencv-python
 Flask
 flask_restful
 flask_cors
-tensorflow
-torch
-torchvision
-torchaudio
 gunicorn
