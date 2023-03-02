@@ -1,13 +1,11 @@
 import tracemalloc
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pytesseract as ts
 import cv2.cv2 as cv2
 import re
-from transformers import BartTokenizer, BartForConditionalGeneration
-from deep_translator import GoogleTranslator
 from openaiapi import getKey, gpt3Completion
+
 
 class Pipeline:
 
@@ -42,7 +40,9 @@ class Pipeline:
             print(points)
             mask = np.zeros(image.shape[:2], dtype=np.uint8)
 
-            mask_points = np.array([(float(p["x"])*float(widthRatio), float(p["y"])*float(heightRatio)) for p in points], dtype=np.int32)
+            mask_points = np.array(
+                [(float(p["x"]) * float(widthRatio), float(p["y"]) * float(heightRatio)) for p in points],
+                dtype=np.int32)
             inverse_image = (np.ones_like(image) * 255) - image
 
             cv2.fillPoly(mask, [mask_points], (255, 255, 255))
@@ -50,11 +50,9 @@ class Pipeline:
             mask_combined = cv2.bitwise_and(inverse_image, mask)
             image = (np.ones_like(image) * 255) - mask_combined
 
-
         return image
 
     def processResult(self, text):
-
 
         pattern = r'(\S)—\s*'
         result = re.sub(pattern, r"\1", text, flags=re.MULTILINE)
@@ -86,11 +84,9 @@ class Pipeline:
 
         return text[low:high]
 
-tracemalloc.start()
-pip = Pipeline()
-image = cv2.imread("../images/IMG_2743.jpg")
-s = pip.fullRun(image, 0, 0, "")
-print(tracemalloc.get_traced_memory())
-tracemalloc.stop()
-
-
+# tracemalloc.start()
+# pip = Pipeline()
+# image = cv2.imread("../images/IMG_2743.jpg")
+# s = pip.fullRun(image, 0, 0, "")
+# print(tracemalloc.get_traced_memory())
+# tracemalloc.stop()

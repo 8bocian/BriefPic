@@ -1,6 +1,7 @@
 import os
 import openai
 
+
 def getKey():
     try:
         key = os.getenv("API_KEY")
@@ -29,6 +30,7 @@ def gpt3Completion(prompt, engine='text-davinci-002', temp=0.7,
         except Exception as e:
             retry += 1
             return e
+
 
 if __name__ == '__main__':
     prompt = 'Summarize the text'
