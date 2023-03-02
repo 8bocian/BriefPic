@@ -2,12 +2,6 @@ import os
 import openai
 
 def getKey():
-    # try:
-    #     key = open("C:/Users/Bocian/Desktop/openaiapikey.txt").readlines()[0]
-    #     openai.api_key = key
-    #     return "success"
-    # except Exception as e:
-    #     pass
     try:
         key = os.getenv("API_KEY")
         openai.api_key = key
