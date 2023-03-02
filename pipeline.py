@@ -76,6 +76,7 @@ class Pipeline:
 
     def trimText(self, text):
         low = None
+
         for i, char in enumerate(text):
             if char.isupper():
                 low = i
