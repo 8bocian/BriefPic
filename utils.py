@@ -2,7 +2,9 @@ import logging
 import os
 import uuid
 from sys import stdout
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def createLogger():
     logger = logging.getLogger(f'logger{str(uuid.uuid4())}')
