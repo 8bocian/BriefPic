@@ -5,6 +5,7 @@ from flask_restful import Resource, Api
 from flask_cors import CORS
 from pipeline import Pipeline
 import cv2
+from utils import createLogger
 
 
 app = Flask(__name__)
@@ -12,6 +13,7 @@ app.config['TIMEOUT'] = 120
 CORS(app)
 api = Api(app)
 pip = Pipeline()
+logger = createLogger()
 
 
 def createResponse(message, code, file=False):
@@ -42,3 +44,9 @@ class Summarizer(Resource):
         text = pip.fullRun(image, widthRatio, heightRatio, prefix, mask)
         print(text)
         return createResponse(text, 200)
+
+api.add_resource(Summarizer, '/summarize')
+
+if __name__ == '__main__':
+
+    app.run(host="0.0.0.0", port=80, debug=True)
