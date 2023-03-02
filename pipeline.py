@@ -2,7 +2,7 @@ import tracemalloc
 import matplotlib.pyplot as plt
 import numpy as np
 import pytesseract as ts
-import cv2.cv2 as cv2
+import cv2
 import re
 from openaiapi import getKey, gpt3Completion
 
