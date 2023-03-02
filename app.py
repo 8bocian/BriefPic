@@ -5,12 +5,8 @@ from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
 from flask_cors import CORS
 from pipeline import Pipeline
-from fastapi import FastAPI, UploadFile, File
-from starlette.requests import Request
-import io
 import cv2
 
-from pydantic import BaseModel
 
 app = Flask(__name__)
 app.config['TIMEOUT'] = 120
@@ -55,25 +51,25 @@ class Summarizer(Resource):
         return createResponse(text, 200)
 
 
-app = FastAPI()
-
-
-class ImageType(BaseModel):
-    url: str
-
-
-@app.post("/predict/")
-def prediction(request: Request, file: bytes = File):
-    if request.method == "POST":
-        image_stream = io.BytesIO(file)
-        image_stream.seek(0)
-        file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
-        image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        widthRatio = 0
-        heightRatio = 0
-        prefix = ""
-        mask = None
-        text = pip.fullRun(image, widthRatio, heightRatio, prefix, mask)
-
-        return text
-    return "Method Not Allowed"
+# app = FastAPI()
+#
+#
+# class ImageType(BaseModel):
+#     url: str
+#
+#
+# @app.post("/predict/")
+# def prediction(request: Request, file: bytes = File):
+#     if request.method == "POST":
+#         image_stream = io.BytesIO(file)
+#         image_stream.seek(0)
+#         file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
+#         image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+#         widthRatio = 0
+#         heightRatio = 0
+#         prefix = ""
+#         mask = None
+#         text = pip.fullRun(image, widthRatio, heightRatio, prefix, mask)
+#
+#         return text
+#     return "Method Not Allowed"
