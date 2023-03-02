@@ -1,3 +1,5 @@
+import tracemalloc
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pytesseract as ts
@@ -5,12 +7,12 @@ import cv2.cv2 as cv2
 import re
 from transformers import BartTokenizer, BartForConditionalGeneration
 from deep_translator import GoogleTranslator
-
+from openaiapi import getKey, gpt3Completion
 
 class Pipeline:
+
     def __init__(self):
-        self.tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
-        self.model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
+        getKey()
 
     def extractText(self, image):
         text = ts.image_to_data(image, config="--psm 3 --oem 2", lang='pol', output_type='dict')
@@ -20,16 +22,14 @@ class Pipeline:
         text = " ".join(text['text'])
         return text
 
-    def summary(self, text):
-        translated = GoogleTranslator(source='auto', target='en').translate(text)
+    def summary(self, text, prefix):
+        # translated = GoogleTranslator(source='auto', target='en').translate(text)
 
-        input_ids = self.tokenizer.encode(translated, return_tensors='pt')
-        summary_ids = self.model.generate(input_ids, max_length=500, num_beams=4, early_stopping=True)
-        summary = self.tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+        summary = gpt3Completion(f"{prefix} \n {text}")
 
-        final = GoogleTranslator(source='auto', target='pl').translate(summary)
+        # final = GoogleTranslator(source='auto', target='pl').translate(summary)
 
-        return final
+        return summary
 
     def preproces(self, image, widthRatio, heightRatio, points=None):
         image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
@@ -64,15 +64,14 @@ class Pipeline:
 
         return result
 
-    def fullRun(self, image, widthRatio, heightRatio, points=None):
+    def fullRun(self, image, widthRatio, heightRatio, prefix, points=None):
         image = self.preproces(image, widthRatio, heightRatio, points)
 
         text = self.extractText(image)
 
         processedText = self.processResult(text)
-        print(processedText)
-        cv2.imwrite("test.jpg", image)
-        summary = self.summary(processedText)
+        # cv2.imwrite("test.jpg", image)
+        summary = self.summary(processedText, prefix)
 
         return summary
 
@@ -87,10 +86,11 @@ class Pipeline:
 
         return text[low:high]
 
-# pip = Pipeline()
-# image = cv2.imread("../images/IMG_2743.jpg")
-# s = pip.fullRun(image)
-# print(s)
-
+tracemalloc.start()
+pip = Pipeline()
+image = cv2.imread("../images/IMG_2743.jpg")
+s = pip.fullRun(image, 0, 0, "")
+print(tracemalloc.get_traced_memory())
+tracemalloc.stop()
 
 

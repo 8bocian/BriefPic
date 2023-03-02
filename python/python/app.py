@@ -38,9 +38,14 @@ class Summarizer(Resource):
         heightRatio = request.form['heighthRatio']
         image_bytes = request.files['image']
 
+        # if request.files['type'] == "bulletpoints":
+        #     prefix = "Stwórz punkty na podstawie tekstu: "
+        # else:
+        #     prefix = "Podsumuj tekst: "
+        prefix = "Podsumuj tekst: "
         image_bytes.save("image.jpg")
         image = cv2.imread("image.jpg")
-        text = pip.fullRun(image, widthRatio, heightRatio, mask)
+        text = pip.fullRun(image, widthRatio, heightRatio, prefix, mask)
         print(text)
         return createResponse(text, 200)
 

@@ -1,8 +1,0 @@
-version: "3.9"
-services:
-  summarizer:
-    image: "summarizer"
-    container_name: summarization-service
-    ports:
-      - "8080:5000"
-    restart: always
