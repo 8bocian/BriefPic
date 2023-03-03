@@ -81,7 +81,10 @@ def hello_world():
 @app.errorhandler(404)
 def handle_bad_request(error):
     # Return a custom error message
-    return jsonify({"error": "Bad request"}), 400
+    app.logger.info(request.data)
+    app.logger.info(request.headers)
+    app.logger.info(request.remote_addr)
+    return jsonify({"error": "Pls, don't do this"}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
