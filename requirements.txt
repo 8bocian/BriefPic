@@ -8,3 +8,4 @@ openai
 numpy
 matplotlib
 python-dotenv
+flask_mail

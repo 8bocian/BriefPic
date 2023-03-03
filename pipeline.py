@@ -1,5 +1,6 @@
 import tracemalloc
 import matplotlib.pyplot as plt
+import os
 import numpy as np
 import pytesseract as ts
 import cv2
@@ -10,7 +11,7 @@ from openaiapi import getKey, gpt3Completion
 class Pipeline:
 
     def __init__(self):
-        # ts.pytesseract.tesseract_cmd =  '/usr/bin/tesseract'
+        ts.pytesseract.tesseract_cmd =  os.getenv("TESSERACT_PATH")
         getKey()
 
     def extractText(self, image):
@@ -30,7 +31,7 @@ class Pipeline:
 
         return summary
 
-    def preproces(self, image, widthRatio, heightRatio, points=None):
+    def preproces(self, image, points=None):
         image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 101, 30)
 
@@ -42,7 +43,7 @@ class Pipeline:
             mask = np.zeros(image.shape[:2], dtype=np.uint8)
 
             mask_points = np.array(
-                [(float(p["x"]) * float(widthRatio), float(p["y"]) * float(heightRatio)) for p in points],
+                [(float(p["x"]), float(p["y"])) for p in points],
                 dtype=np.int32)
             inverse_image = (np.ones_like(image) * 255) - image
 
@@ -63,8 +64,8 @@ class Pipeline:
 
         return result
 
-    def fullRun(self, image, widthRatio, heightRatio, prefix, points=None):
-        image = self.preproces(image, widthRatio, heightRatio, points)
+    def fullRun(self, image, prefix, points=None):
+        image = self.preproces(image, points)
 
         text = self.extractText(image)
 
