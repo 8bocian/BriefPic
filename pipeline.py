@@ -14,7 +14,7 @@ class Pipeline:
         getKey()
 
     def extractText(self, image):
-        text = ts.image_to_data(image, config="--psm 3 --oem 2", lang='pol', output_type='dict')
+        text = ts.image_to_data(image, config="--psm 3 --oem 3", lang='pol', output_type='dict')
         # text = text[['conf', 'text']]
         # text = text[text['conf'] > 60]
         print(text['text'])
