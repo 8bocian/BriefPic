@@ -86,9 +86,6 @@ def handle_bad_request(error):
     app.logger.info(request.remote_addr)
     return jsonify({"error": "Pls, don't do this"}), 400
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
 if __name__ == '__main__':
 
     app.run(host="0.0.0.0", port=80, debug=True)
