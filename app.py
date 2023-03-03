@@ -76,7 +76,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return jsonify({"message": "Hello, world!"})
+    return jsonify({"message": "Hello, {Your name goes here mr hacker}! Please leave me alone thank you in advance"})
 
 @app.errorhandler(404)
 def handle_bad_request(error):
