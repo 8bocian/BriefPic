@@ -10,7 +10,7 @@ from openaiapi import getKey, gpt3Completion
 class Pipeline:
 
     def __init__(self):
-        ts.pytesseract.tesseract_cmd =  '/app/.apt/usr/bin/tesseract'
+        ts.pytesseract.tesseract_cmd =  '/usr/bin/tesseract'
         getKey()
 
     def extractText(self, image):
