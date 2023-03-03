@@ -23,9 +23,9 @@ def createResponse(message, code, file=False):
         response = jsonify(message)
     response.status_code = code
     response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    response.headers.add('Access-Control-Allow-Methods', 'POST')
     response.headers.add('Access-Control-Allow-Headers', '*')
-    response.headers.add('Access-Control-Max-Age', '120000')
+    response.headers.add('Access-Control-Max-Age', '1200')
     return response
 
 
