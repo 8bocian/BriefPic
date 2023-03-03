@@ -1,6 +1,7 @@
 import json
 import numpy as np
-from flask import Flask, request, jsonify
+from fastapi import HTTPException
+from flask import Flask, request, jsonify, HTTPException
 from flask_restful import Resource, Api, abort
 from flask_cors import CORS
 from pipeline import Pipeline
@@ -36,10 +37,14 @@ class BadResource(Resource):
         # Raise a bad request exception
         abort(400, message="Bad request")
 
-@app.errorhandler(400)
-def handle_bad_request(error):
-    # Return a custom error message
-    return jsonify({"message": "Pls, don't do this to me"}), 400
+@app.errorhandler(Exception)
+def handle_error(error):
+    if isinstance(error, HTTPException):
+        # Return a custom error message for HTTP exceptions
+        return jsonify({"error": str(error)})
+    else:
+        # Return a generic error message for other exceptions
+        return jsonify({"error": "Internal server error"})
 
 api.add_resource(BadResource, "/bad")
 
