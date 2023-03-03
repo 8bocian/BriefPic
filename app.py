@@ -31,12 +31,16 @@ def createResponse(message, code, file=False):
 
 class Summarizer(Resource):
     def post(self):
+        print(request.form)
+        print(request.values)
+        print(request.files)
+        print(request.data)
         mask = json.loads(request.form['mask'])
         widthRatio = request.form['widthRatio']
         heightRatio = request.form['heighthRatio']
         image_stream = request.files['image'].stream
 
-        prefix = "Podsumuj tekst: "
+        prefix = "Stwórz 4 krótkie punkty na podstawie tekstu ale nie kończ podanego tekstu: "
 
         image_stream.seek(0)
         file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)

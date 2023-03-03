@@ -10,7 +10,7 @@ from openaiapi import getKey, gpt3Completion
 class Pipeline:
 
     def __init__(self):
-        ts.pytesseract.tesseract_cmd =  '/usr/bin/tesseract'
+        # ts.pytesseract.tesseract_cmd =  '/usr/bin/tesseract'
         getKey()
 
     def extractText(self, image):
@@ -24,7 +24,7 @@ class Pipeline:
     def summary(self, text, prefix):
         # translated = GoogleTranslator(source='auto', target='en').translate(text)
 
-        summary = gpt3Completion(f"{prefix} \n {text}")
+        summary = gpt3Completion(f"{prefix} {text}")
 
         # final = GoogleTranslator(source='auto', target='pl').translate(summary)
 
@@ -34,8 +34,8 @@ class Pipeline:
         image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 101, 30)
 
-        plt.imshow(image)
-        plt.show()
+        # plt.imshow(image)
+        # plt.show()
 
         if points is not None:
             print(points)

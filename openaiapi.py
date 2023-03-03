@@ -18,15 +18,17 @@ def gpt3Completion(prompt, engine='text-davinci-002', temp=0.7,
                    stop=('USER:', 'TIM:')):
     max_retry = 5
     retry = 0
-    prompt = prompt.encode(encoding="ASCII", errors="ignore").decode()
+    # prompt = prompt.encode(encoding="ASCII", errors="ignore").decode()
 
     while retry < max_retry:
         try:
-            response = openai.Completion.create(engine=engine, prompt=prompt,
-                                                temperature=temp, max_tokens=tokens,
-                                                top_p=top_p, frequency_penalty=freq_pen,
-                                                presence_penalty=pres_pen, stop=stop)
-            text = response['choices'][0]['text'].strip()
+            # response = openai.Completion.create(engine=engine, prompt=prompt,
+            #                                     temperature=temp, max_tokens=tokens,
+            #                                     top_p=top_p, frequency_penalty=freq_pen,
+            #                                     presence_penalty=pres_pen, stop=stop)
+            response = openai.ChatCompletion.create(model="gpt-3.5-turbo",
+                                     messages=[{"role": "system", "content": prompt}])
+            text = response['choices'][0]['message']['content'].strip()
 
             return text
         except Exception as e:
