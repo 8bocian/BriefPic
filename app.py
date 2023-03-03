@@ -19,6 +19,8 @@ app.config['MAIL_USERNAME'] = os.getenv("GMAIL_ADDR")
 app.config['MAIL_PASSWORD'] = os.getenv("GMAIL_PASSWD")
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_SUPPRESS_SEND'] = True
+
 
 CORS(app)
 mail = Mail(app)
