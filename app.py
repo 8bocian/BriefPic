@@ -49,7 +49,7 @@ class Summarizer(Resource):
         logger.info(text)
         return createResponse(text, 200)
 
-api.add_resource(Summarizer, '/summarize')
+api.add_resource(Summarizer, '/summarize/submit-form')
 
 if __name__ == '__main__':
 
