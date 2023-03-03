@@ -31,10 +31,10 @@ def createResponse(message, code, file=False):
 
 class Summarizer(Resource):
     def post(self):
-        print(request.form)
-        print(request.values)
-        print(request.files)
-        print(request.data)
+        logger.info(request.form)
+        logger.info(request.values)
+        logger.info(request.files)
+        logger.info(request.data)
         mask = json.loads(request.form['mask'])
         widthRatio = request.form['widthRatio']
         heightRatio = request.form['heighthRatio']
@@ -46,7 +46,7 @@ class Summarizer(Resource):
         file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
         image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
         text = pip.fullRun(image, widthRatio, heightRatio, prefix, mask)
-        print(text)
+        logger.info(text)
         return createResponse(text, 200)
 
 api.add_resource(Summarizer, '/summarize')
