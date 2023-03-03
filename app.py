@@ -1,6 +1,5 @@
 import json
 import numpy as np
-from fastapi import HTTPException
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api, abort
 from flask_cors import CORS
