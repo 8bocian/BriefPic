@@ -1,7 +1,7 @@
 import json
 import numpy as np
 from flask import Flask, request, jsonify
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, abort
 from flask_cors import CORS
 from pipeline import Pipeline
 import cv2
@@ -29,6 +29,19 @@ def createResponse(message, code, file=False):
     response.headers.add('Access-Control-Max-Age', '1200')
     return response
 
+
+
+class BadResource(Resource):
+    def get(self):
+        # Raise a bad request exception
+        abort(400, message="Bad request")
+
+@app.errorhandler(400)
+def handle_bad_request(error):
+    # Return a custom error message
+    return jsonify({"message": "Pls, don't do this to me"}), 400
+
+api.add_resource(BadResource, "/bad")
 
 class Summarizer(Resource):
     def post(self):
