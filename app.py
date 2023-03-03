@@ -10,6 +10,7 @@ from utils import createLogger
 
 app = Flask(__name__)
 app.config['TIMEOUT'] = 120
+app.config['DEBUG'] = True
 CORS(app)
 api = Api(app)
 pip = Pipeline()
@@ -31,15 +32,20 @@ def createResponse(message, code, file=False):
 
 class Summarizer(Resource):
     def post(self):
-        logger.info(request.form)
-        logger.info(request.values)
-        logger.info(request.files)
-        logger.info(request.data)
+        print(request.form)
         mask = json.loads(request.form['mask'])
-        widthRatio = request.form['widthRatio']
-        heightRatio = request.form['heighthRatio']
+        print(mask)
+        mask = [{'x': 22, 'y': 4.171875},
+                {'x': 363, 'y': 8.171875},
+                {'x': 372, 'y': 364.171875},
+                {'x': 14, 'y': 366.171875}]
+        # widthRatio = request.form['widthRatio']
+        # heightRatio = request.form['heighthRatio']
+        # print(widthRatio, heightRatio)
         image_stream = request.files['image'].stream
 
+        widthRatio = 8.042553191489361
+        heightRatio = 8.032432432432433
         prefix = "Stwórz 4 krótkie punkty na podstawie tekstu ale nie kończ podanego tekstu: "
 
         image_stream.seek(0)
@@ -49,7 +55,7 @@ class Summarizer(Resource):
         logger.info(text)
         return createResponse(text, 200)
 
-api.add_resource(Summarizer, '/summarize/submit-form')
+api.add_resource(Summarizer, '/summarize')
 
 if __name__ == '__main__':
 
