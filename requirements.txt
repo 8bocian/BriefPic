@@ -7,5 +7,4 @@ gunicorn
 openai
 numpy
 matplotlib
-logging
 python-dotenv
