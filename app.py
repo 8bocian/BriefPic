@@ -1,7 +1,7 @@
 import json
 import os
 import numpy as np
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from pipeline import Pipeline
 import cv2
@@ -43,7 +43,8 @@ def createResponse(message, code):
 
 @app.route("/robots.txt", methods=["GET"])
 def robots():
-    return "User-agent: *\nDisallow: /"
+    robotsTxt = "User-agent: * \nDisallow: /"
+    return Response(robotsTxt, mimetype='text/plain')
 
 
 @app.route("/summarize", methods=["POST"])
