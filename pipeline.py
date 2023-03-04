@@ -18,7 +18,6 @@ class Pipeline:
         text = ts.image_to_data(image, config="--psm 3 --oem 3", lang='pol', output_type='dict')
         # text = text[['conf', 'text']]
         # text = text[text['conf'] > 60]
-        print(text['text'])
         text = " ".join(text['text'])
         return text
 
@@ -39,7 +38,6 @@ class Pipeline:
         # plt.show()
 
         if points is not None:
-            print(points)
             mask = np.zeros(image.shape[:2], dtype=np.uint8)
 
             mask_points = np.array(

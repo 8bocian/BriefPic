@@ -63,9 +63,10 @@ def summarize():
             {'x': 0, 'y': shape[0]}]
 
     text = pip.fullRun(image, prefix, mask)
-    app.logger.info(request.data)
-    app.logger.info(request.headers)
-    app.logger.info(request.remote_addr)
+    app.logger.info(text)
+    app.logger.debug(request.data)
+    app.logger.debug(request.headers)
+    app.logger.debug(request.remote_addr)
     with app.app_context():
         msg = Message('Summarize request', sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
         msg.body = f'''
