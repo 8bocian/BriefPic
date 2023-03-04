@@ -91,6 +91,40 @@ def handle_bad_request(error):
         mail.send(msg)
     return jsonify({"error": "Pls, don't do this"}), 400
 
+@app.errorhandler(500)
+def handle_bad_request(error):
+    app.logger.info(request.data)
+    app.logger.info(request.headers)
+    app.logger.info(request.remote_addr)
+    with app.app_context():
+        msg = Message('Bad request', sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
+        msg.body = f'''
+        request.data: {request.data}\n
+        request.headers: {request.headers}\n
+        request.remote_addr: {request.remote_addr}\n
+        request.path: {request.path}\n
+        error: {error}\n
+        '''
+        mail.send(msg)
+    return jsonify({"error": "Pls, don't do this"}), 400
+
+@app.errorhandler(400)
+def handle_bad_request(error):
+    app.logger.info(request.data)
+    app.logger.info(request.headers)
+    app.logger.info(request.remote_addr)
+    with app.app_context():
+        msg = Message('Bad request', sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
+        msg.body = f'''
+        request.data: {request.data}\n
+        request.headers: {request.headers}\n
+        request.remote_addr: {request.remote_addr}\n
+        request.path: {request.path}\n
+        error: {error}\n
+        '''
+        mail.send(msg)
+    return jsonify({"error": "Pls, don't do this"}), 400
+
 if __name__ == '__main__':
     with app.app_context():
         msg = Message('Log', sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
