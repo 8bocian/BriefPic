@@ -45,10 +45,7 @@ def summarize():
     print(request.form)
     mask = json.loads(request.form['mask'])
     print(mask)
-    mask = [{'x': 22, 'y': 4.171875},
-            {'x': 363, 'y': 8.171875},
-            {'x': 372, 'y': 364.171875},
-            {'x': 14, 'y': 366.171875}]
+
     image_stream = request.files['image'].stream
 
     prefix = "Stwórz 4 krótkie punkty na podstawie tekstu ale nie kończ podanego tekstu: "
@@ -56,6 +53,15 @@ def summarize():
     image_stream.seek(0)
     file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
     image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    shape = image.shape
+    if shape[1] > shape[0]:
+        image = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+    shape = image.shape
+    mask = [{'x': 0, 'y': 0},
+            {'x': shape[1], 'y': 0},
+            {'x': shape[1], 'y': shape[0]},
+            {'x': 0, 'y': shape[0]}]
+
     text = pip.fullRun(image, prefix, mask)
     app.logger.info(request.data)
     app.logger.info(request.headers)
