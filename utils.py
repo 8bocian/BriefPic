@@ -10,7 +10,7 @@ def createLogger():
     logger = logging.getLogger(f'logger{str(uuid.uuid4())}')
     logger.propagate = False
     logFormatter = logging.Formatter('%(asctime)s %(levelname)s:%(message)s')
-    level = logging.getLevelName(os.getenv("LOG_LEVEL"))
+    level = logging.getLevelName("INFO")
     logger.setLevel(level)
     consoleHandler = logging.StreamHandler(stdout)
     consoleHandler.setFormatter(logFormatter)

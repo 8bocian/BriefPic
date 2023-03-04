@@ -7,7 +7,9 @@ from pipeline import Pipeline
 import cv2
 from utils import createLogger
 from flask_mail import Mail, Message
+from dotenv import load_dotenv
 
+load_dotenv()
 
 
 app = Flask(__name__)
@@ -38,6 +40,10 @@ def createResponse(message, code):
     response.headers.add('Access-Control-Max-Age', '1200')
     return response
 
+
+@app.route("/robots.txt", methods=["GET"])
+def robots():
+    return "User-agent: *\nDisallow: /"
 
 
 @app.route("/summarize", methods=["POST"])
