@@ -13,15 +13,19 @@ class Pipeline:
 
     def __init__(self):
         self.kernel_size = 40
-        ts.pytesseract.tesseract_cmd =  os.getenv("TESSERACT_PATH")
+        # print(os.getenv("TESSERACT_PATH"))
+        # ts.pytesseract.tesseract_cmd =  os.getenv("TESSERACT_PATH")
         getKey()
 
-    def extractText(self, image):
-        text = ts.image_to_data(image, config="--psm 3 --oem 3", lang='pol', output_type='dict')
-        # text = text[['conf', 'text']]
-        # text = text[text['conf'] > 60]
-        text = " ".join(text['text'])
-        return text
+    def extractText(self, images):
+        fullText = ""
+        for image in images:
+            text = ts.image_to_data(image, config="--psm 3 --oem 3", lang='pol', output_type='dict')
+            # text = text[['conf', 'text']]
+            # text = text[text['conf'] > 60]
+            text = " ".join(text['text'])
+            fullText += text + " "
+        return fullText
 
     def summary(self, text, prefix):
 
@@ -35,32 +39,41 @@ class Pipeline:
         imageThresh = cv2.adaptiveThreshold(imageGray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 101, 30)
         imageInv = cv2.bitwise_not(imageThresh)
 
-        plt.imshow(image)
-        plt.show()
+
 
         boxes = self.getTextBoxes(imageInv)
 
         boxesSelected = []
 
+        print(points)
+
         for box in boxes:
             x1, y1, x2, y2 = box
             for point in points:
-                if x1 <= point[0] <= x2 and y1 <= point[1] <= y2:
+                print(point)
+                cv2.circle(image, (int(point["x"]), int(point["y"])), 40, (0, 0, 255), -1)
+                if x1 <= point["x"] <= x2 and y1 <= point["y"] <= y2:
                     boxesSelected.append(box)
 
-        mask = np.zeros_like(image)
+        # plt.imshow(image)
+        # plt.show()
+
+        masks = [np.zeros_like(imageInv) for _ in range(len(boxesSelected))]
 
         # draw each bounding box onto the mask
-        for box in boxes:
+        for idx in range(len(boxesSelected)):
+            box = boxesSelected[idx]
+            mask = masks[idx]
             cv2.rectangle(mask, (box[0], box[1]), (box[2], box[3]), color=255, thickness=-1)
 
-        # use the mask to zero out pixels in the input image
-        imageMasked = cv2.bitwise_and(image, mask)
+            # use the mask to zero out pixels in the input image
+            imageMasked = cv2.bitwise_and(imageInv, mask)
+            masks[idx] = imageMasked
+            # plt.imshow(imageMasked, cmap='gray')
+            # plt.show()
 
-        plt.imshow(imageMasked)
-        plt.show()
 
-        return imageMasked
+        return masks
 
     def getTextBoxes(self, image):
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (self.kernel_size, self.kernel_size))
@@ -87,12 +100,15 @@ class Pipeline:
 
         return result
 
-    def fullRun(self, image, prefix, points=None):
+    def fullRun(self, image, prefix, points):
         image = self.preproces(image, points)
 
         text = self.extractText(image)
+        print(f"Text: {text}")
 
         processedText = self.processResult(text)
+        print(f"Processed: {processedText}")
+
         # cv2.imwrite("test.jpg", image)
         summary = self.summary(processedText, prefix)
 

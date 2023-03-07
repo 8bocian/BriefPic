@@ -17,3 +17,8 @@ def createLogger():
     logger.addHandler(consoleHandler)
 
     return logger
+
+def convertPoints(points, ratioV, ratioH):
+    points = [{"x": point["x"] * ratioV, "y": point["y"] * ratioH} for point in points]
+    print(points)
+    return points

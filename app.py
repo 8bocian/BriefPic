@@ -1,11 +1,11 @@
 import json
 import os
 import numpy as np
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, make_response
 from flask_cors import CORS
 from pipeline import Pipeline
 import cv2
-from utils import createLogger
+from utils import createLogger, convertPoints
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 
@@ -49,25 +49,20 @@ def robots():
 
 @app.route("/summarize", methods=["POST"])
 def summarize():
-    print(request.form)
-    mask = json.loads(request.form['mask'])
-    print(mask)
-
     image_stream = request.files['image'].stream
-
-    prefix = "Stwórz 4 krótkie punkty na podstawie tekstu ale nie kończ podanego tekstu: "
-
     image_stream.seek(0)
     file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
     image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-    shape = image.shape
-    if shape[1] > shape[0]:
-        image = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
-    shape = image.shape
-    mask = [{'x': 0, 'y': 0},
-            {'x': shape[1], 'y': 0},
-            {'x': shape[1], 'y': shape[0]},
-            {'x': 0, 'y': shape[0]}]
+    image = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+    print(image.shape)
+    points = json.loads(request.form['points'])
+    print(points)
+    ratioV = json.loads(request.form['ratio'])['ratioV']
+    ratioH = json.loads(request.form['ratio'])['ratioH']
+
+    mask = convertPoints(points, ratioV, ratioH)
+
+    prefix = "Stwórz 4 krótkie punkty na podstawie tekstu ale nie kończ podanego tekstu: "
 
     text = pip.fullRun(image, prefix, mask)
     app.logger.info(text)
@@ -83,7 +78,7 @@ def summarize():
             request.path: {request.path}\n
             '''
         mail.send(msg)
-    return createResponse(text, 200)
+    return jsonify(text)
 
 
 
