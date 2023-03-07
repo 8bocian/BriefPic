@@ -19,9 +19,9 @@ def createLogger():
     logger.addHandler(fileHandler)
 
     # configure a console handler for debugging
-    consoleHandler = logging.StreamHandler(stdout)
-    consoleHandler.setFormatter(logFormatter)
-    logger.addHandler(consoleHandler)
+    # consoleHandler = logging.StreamHandler(stdout)
+    # consoleHandler.setFormatter(logFormatter)
+    # logger.addHandler(consoleHandler)
 
     return logger
 
