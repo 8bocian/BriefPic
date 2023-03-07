@@ -12,6 +12,13 @@ def createLogger():
     logFormatter = logging.Formatter('%(asctime)s %(levelname)s:%(message)s')
     level = logging.getLevelName("INFO")
     logger.setLevel(level)
+
+    # configure a file handler that writes to a file
+    fileHandler = logging.FileHandler('mylogfile.log')
+    fileHandler.setFormatter(logFormatter)
+    logger.addHandler(fileHandler)
+
+    # configure a console handler for debugging
     consoleHandler = logging.StreamHandler(stdout)
     consoleHandler.setFormatter(logFormatter)
     logger.addHandler(consoleHandler)
