@@ -55,8 +55,8 @@ class Pipeline:
                 if x1 <= point["x"] <= x2 and y1 <= point["y"] <= y2:
                     boxesSelected.append(box)
 
-        plt.imshow(image)
-        plt.show()
+        # plt.imshow(image)
+        # plt.show()
 
         masks = [np.zeros_like(imageInv) for _ in range(len(boxesSelected))]
 
@@ -67,8 +67,8 @@ class Pipeline:
 
             imageMasked = cv2.bitwise_and(imageInv, mask)
             masks[idx] = imageMasked
-            plt.imshow(imageMasked, cmap='gray')
-            plt.show()
+            # plt.imshow(imageMasked, cmap='gray')
+            # plt.show()
 
 
         return masks
