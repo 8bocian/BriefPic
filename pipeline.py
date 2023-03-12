@@ -55,22 +55,20 @@ class Pipeline:
                 if x1 <= point["x"] <= x2 and y1 <= point["y"] <= y2:
                     boxesSelected.append(box)
 
-        # plt.imshow(image)
-        # plt.show()
+        plt.imshow(image)
+        plt.show()
 
         masks = [np.zeros_like(imageInv) for _ in range(len(boxesSelected))]
 
-        # draw each bounding box onto the mask
         for idx in range(len(boxesSelected)):
             box = boxesSelected[idx]
             mask = masks[idx]
             cv2.rectangle(mask, (box[0], box[1]), (box[2], box[3]), color=255, thickness=-1)
 
-            # use the mask to zero out pixels in the input image
             imageMasked = cv2.bitwise_and(imageInv, mask)
             masks[idx] = imageMasked
-            # plt.imshow(imageMasked, cmap='gray')
-            # plt.show()
+            plt.imshow(imageMasked, cmap='gray')
+            plt.show()
 
 
         return masks
@@ -101,9 +99,9 @@ class Pipeline:
         return result
 
     def fullRun(self, image, prefix, points):
-        image = self.preproces(image, points)
+        masks = self.preproces(image, points[::-1])
 
-        text = self.extractText(image)
+        text = self.extractText(masks)
         print(f"Text: {text}")
 
         processedText = self.processResult(text)

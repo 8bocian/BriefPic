@@ -7,21 +7,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def createLogger():
-    logger = logging.getLogger(f'logger{str(uuid.uuid4())}')
+    logging.basicConfig(filename='flask.log',
+                        filemode='a',
+                        format='%(asctime)s %(levelname)s:%(message)s',
+                        datefmt='%H:%M:%S',
+                        level=logging.INFO)
+    logging.info("Started logger")
+
+    logger = logging.getLogger('logger')
     logger.propagate = False
-    logFormatter = logging.Formatter('%(asctime)s %(levelname)s:%(message)s')
-    level = logging.getLevelName("INFO")
-    logger.setLevel(level)
-
-    # configure a file handler that writes to a file
-    fileHandler = logging.FileHandler('mylogfile.log')
-    fileHandler.setFormatter(logFormatter)
-    logger.addHandler(fileHandler)
-
-    # configure a console handler for debugging
-    # consoleHandler = logging.StreamHandler(stdout)
-    # consoleHandler.setFormatter(logFormatter)
-    # logger.addHandler(consoleHandler)
 
     return logger
 
