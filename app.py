@@ -52,8 +52,14 @@ def summarize():
     processedText = json.loads(request.form['text'])['text']
     length = json.loads(request.form['length'])['length']
 
+    if length < 33:
+        t = "krótką"
+    elif length > 66:
+        t = "długą"
+    else:
+        t = "średnią"
 
-    prefix = f"Skróć podany tekst do {length}% oryginalnej długości ale nie kończ podanego tekstu: "
+    prefix = f"Stwórz {t} notatkę ale nie kończ podanego tekstu: "
 
     text = pip.summary(processedText, prefix)
     app.logger.info(text)
@@ -75,14 +81,6 @@ def sendMail(text):
         mail.send(msg)
 
 
-@app.errorhandler(404)
-def handle_404(error):
-    app.logger.info(request.data)
-    app.logger.info(request.headers)
-    app.logger.info(request.remote_addr)
-    sendMail('Bad request ' + error)
-    return jsonify({"error": "Pls, don't do this"}), 400
-
 @app.errorhandler(400)
 def handle_400(error):
     app.logger.info(request.data)
@@ -91,8 +89,16 @@ def handle_400(error):
     sendMail('Bad request ' + error)
     return jsonify({"error": "Pls, don't do this"}), 400
 
+@app.errorhandler(404)
+def handle_404(error):
+    app.logger.info(request.data)
+    app.logger.info(request.headers)
+    app.logger.info(request.remote_addr)
+    sendMail('Bad request ' + error)
+    return jsonify({"error": "Pls, don't do this"}), 400
+
 @app.errorhandler(500)
-def handle_400(error):
+def handle_500(error):
     app.logger.info(request.data)
     app.logger.info(request.headers)
     app.logger.info(request.remote_addr)
