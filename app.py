@@ -49,27 +49,23 @@ def robots():
 
 @app.route("/summarize", methods=["POST"])
 def summarize():
-    image_stream = request.files['image'].stream
-    image_stream.seek(0)
-    file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
-    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-
-    points = json.loads(request.form['points'])
-    ratioV = json.loads(request.form['ratio'])['ratioV']
-    ratioH = json.loads(request.form['ratio'])['ratioH']
+    processedText = json.loads(request.form['text'])['text']
     length = json.loads(request.form['length'])['length']
 
-    mask = convertPoints(points, ratioV, ratioH)
 
     prefix = f"Skróć podany tekst do {length}% oryginalnej długości ale nie kończ podanego tekstu: "
 
-    text = pip.fullRun(image, prefix, mask)
+    text = pip.summary(processedText, prefix)
     app.logger.info(text)
     app.logger.debug(request.data)
     app.logger.debug(request.headers)
     app.logger.debug(request.remote_addr)
+    sendMail('Summarize request')
+    return jsonify(text)
+
+def sendMail(text):
     with app.app_context():
-        msg = Message('Summarize request', sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
+        msg = Message(text, sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
         msg.body = f'''
             request.data: {request.data}\n
             request.headers: {request.headers}\n
@@ -77,62 +73,31 @@ def summarize():
             request.path: {request.path}\n
             '''
         mail.send(msg)
-    return jsonify(text)
 
 
 @app.errorhandler(404)
-def handle_bad_request(error):
+def handle_404(error):
     app.logger.info(request.data)
     app.logger.info(request.headers)
     app.logger.info(request.remote_addr)
-    with app.app_context():
-        msg = Message('Bad request', sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
-        msg.body = f'''
-        request.data: {request.data}\n
-        request.headers: {request.headers}\n
-        request.remote_addr: {request.remote_addr}\n
-        request.path: {request.path}\n
-        error: {error}\n
-        '''
-        mail.send(msg)
+    sendMail('Bad request ' + error)
     return jsonify({"error": "Pls, don't do this"}), 400
-
-
-@app.errorhandler(500)
-def handle_bad_request(error):
-    app.logger.info(request.data)
-    app.logger.info(request.headers)
-    app.logger.info(request.remote_addr)
-    with app.app_context():
-        msg = Message('Bad request', sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
-        msg.body = f'''
-        request.data: {request.data}\n
-        request.headers: {request.headers}\n
-        request.remote_addr: {request.remote_addr}\n
-        request.path: {request.path}\n
-        error: {error}\n
-        '''
-        mail.send(msg)
-    return jsonify({"error": "Pls, don't do this"}), 400
-
 
 @app.errorhandler(400)
-def handle_bad_request(error):
+def handle_400(error):
     app.logger.info(request.data)
     app.logger.info(request.headers)
     app.logger.info(request.remote_addr)
-    with app.app_context():
-        msg = Message('Bad request', sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
-        msg.body = f'''
-        request.data: {request.data}\n
-        request.headers: {request.headers}\n
-        request.remote_addr: {request.remote_addr}\n
-        request.path: {request.path}\n
-        error: {error}\n
-        '''
-        mail.send(msg)
+    sendMail('Bad request ' + error)
     return jsonify({"error": "Pls, don't do this"}), 400
 
+@app.errorhandler(500)
+def handle_400(error):
+    app.logger.info(request.data)
+    app.logger.info(request.headers)
+    app.logger.info(request.remote_addr)
+    sendMail('Bad request ' + error)
+    return jsonify({"error": "Pls, don't do this"}), 400
 
 if __name__ == '__main__':
     with app.app_context():

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def createLogger():
-    logging.basicConfig(filename='flask.log',
+    logging.basicConfig(
                         filemode='a',
                         format='%(asctime)s %(levelname)s:%(message)s',
                         datefmt='%H:%M:%S',
