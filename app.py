@@ -69,6 +69,10 @@ def summarize():
     sendMail('Summarize request')
     return jsonify(text)
 
+@app.route("/privacy-policy")
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
 def sendMail(text):
     with app.app_context():
         msg = Message(text, sender=os.getenv("GMAIL_ADDR"), recipients=[os.getenv("GMAIL_ADDR")])
