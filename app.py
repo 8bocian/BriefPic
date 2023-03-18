@@ -3,7 +3,7 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
-from flask import Flask, request, jsonify, Response, make_response
+from flask import Flask, request, jsonify, Response, make_response, render_template
 from flask_cors import CORS
 from pipeline import Pipeline
 import cv2
@@ -98,7 +98,7 @@ def handle_404(error):
     app.logger.info(request.data)
     app.logger.info(request.headers)
     app.logger.info(request.remote_addr)
-    sendMail('Bad request ' + error)
+    sendMail('Bad request ' + str(error))
     return jsonify({"error": "Pls, don't do this"}), 400
 
 @app.errorhandler(500)
