@@ -23,7 +23,7 @@ def gpt3Completion(prompt, engine='text-davinci-002', temp=0.7,
     max_retry = 5
     retry = 0
     # prompt = prompt.encode(encoding="ASCII", errors="ignore").decode()
-
+    logger.info(len(prompt))
     while retry < max_retry:
         response = openai.ChatCompletion.create(model="gpt-3.5-turbo",
                                                 messages=[{"role": "system", "content": prompt}])
