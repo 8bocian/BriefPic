@@ -1,6 +1,6 @@
 import json
 import os
-
+from nltk.tokenize import word_tokenize
 import matplotlib.pyplot as plt
 import numpy as np
 from flask import Flask, request, jsonify, Response, make_response, render_template
@@ -57,10 +57,13 @@ def summarize():
     elif length > 66:
         t = "długą"
     else:
-        t = "średnią"
+        t = "średniej długości"
 
     prefix = f"Stwórz {t} notatkę ale nie kończ podanego tekstu: "
 
+    print(pip.countTokens(processedText))
+    print("Tokenizer " + len(word_tokenize(processedText)).__str__())
+    print(processedText)
     text = pip.summary(processedText, prefix)
     app.logger.info(text)
     app.logger.debug(request.data)
@@ -69,9 +72,11 @@ def summarize():
     sendMail('Summarize request')
     return jsonify(text)
 
+
 @app.route("/privacy-policy")
 def privacy_policy():
     return render_template('privacy_policy.html')
+
 
 def sendMail(text):
     with app.app_context():
@@ -93,6 +98,7 @@ def handle_400(error):
     sendMail('Bad request ' + error)
     return jsonify({"error": "Pls, don't do this"}), 400
 
+
 @app.errorhandler(404)
 def handle_404(error):
     app.logger.info(request.data)
@@ -101,6 +107,7 @@ def handle_404(error):
     sendMail('Bad request ' + str(error))
     return jsonify({"error": "Pls, don't do this"}), 400
 
+
 @app.errorhandler(500)
 def handle_500(error):
     app.logger.info(request.data)
@@ -108,6 +115,7 @@ def handle_500(error):
     app.logger.info(request.remote_addr)
     sendMail('Bad request ' + error)
     return jsonify({"error": "Pls, don't do this"}), 400
+
 
 if __name__ == '__main__':
     with app.app_context():
