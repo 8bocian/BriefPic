@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify, Response, make_response, render_templ
 from flask_cors import CORS
 from pipeline import Pipeline
 import cv2
-from utils import createLogger, convertPoints
+from utils import createLogger
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 
