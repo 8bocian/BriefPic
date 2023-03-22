@@ -1,8 +1,10 @@
 import json
 import os
-from nltk.tokenize import word_tokenize
-import matplotlib.pyplot as plt
-import numpy as np
+# import nltk
+# nltk.download("punkt")
+# from nltk.tokenize import word_tokenize
+# import matplotlib.pyplot as plt
+# import numpy as np
 from flask import Flask, request, jsonify, Response, make_response, render_template
 from flask_cors import CORS
 from pipeline import Pipeline
@@ -61,8 +63,8 @@ def summarize():
 
     prefix = f"Stwórz {t} notatkę ale nie kończ podanego tekstu: "
 
-    print(pip.countTokens(processedText))
-    print("Tokenizer " + len(word_tokenize(processedText)).__str__())
+    # print(pip.countTokens(processedText))
+    # print("Tokenizer " + len(word_tokenize(processedText)).__str__())
     print(processedText)
     text = pip.summary(processedText, prefix)
     app.logger.info(text)
