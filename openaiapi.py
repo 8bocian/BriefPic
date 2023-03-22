@@ -28,22 +28,25 @@ def gpt3Completion(prompt, engine='text-davinci-003', temp=0.7,
             response = openai.ChatCompletion.create(model="gpt-3.5-turbo",
                                                     messages=[{"role": "system", "content": prompt}])
             type = 0
-        except:
-            response = openai.Completion.create(engine=engine, prompt=prompt,
-                                                temperature=temp,
-                                                top_p=top_p, frequency_penalty=freq_pen,
-                                                presence_penalty=pres_pen, stop=stop)
-            type = 1
-        try:
-            if type == 0:
-                text = response['choices'][0]['message']['content'].strip()
-            elif type == 1:
-                text = response['choices'][0]['text'].strip()
-            else:
-                raise Exception
-            logger.info(type)
-            logger.info(text[:100])
+            # if type == 0:
+            text = response['choices'][0]['message']['content'].strip()
             return text
+        # except:
+        #     response = openai.Completion.create(engine=engine, prompt=prompt,
+        #                                         temperature=temp,
+        #                                         top_p=top_p, frequency_penalty=freq_pen,
+        #                                         presence_penalty=pres_pen, stop=stop)
+        #     type = 1
+        # try:
+        #     if type == 0:
+        #         text = response['choices'][0]['message']['content'].strip()
+        #     elif type == 1:
+        #         text = response['choices'][0]['text'].strip()
+        #     else:
+        #         raise Exception
+        #     logger.info(type)
+        #     logger.info(text[:100])
+        #     return text
         except Exception as e:
             retry += 1
             logger.info(len(prompt))
